@@ -1,0 +1,13 @@
+#!/bin/bash
+
+reload_pf() {
+    sudo pfctl -a com.crowdstrike -f /etc/pf.anchors/com.crowdstrike 2>/dev/null
+}
+
+A=$(mktemp /tmp/XXXXXX)
+sudo cp /etc/pf.anchors/com.crowdstrike $A
+sudo sh -c 'echo pass in >> /etc/pf.anchors/com.crowdstrike'
+reload_pf
+while [ "$(pgrep -f '/Applications/FaceTime.app/Contents/MacOS/FaceTime')" != "" ]; do sleep 1;done
+sudo mv $A /etc/pf.anchors/com.crowdstrike
+reload_pf
